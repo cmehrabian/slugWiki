@@ -10,9 +10,10 @@ label#no_table_body__label { display: none; }
 
 <h1>{{=title}}</h1>
 
+{{if editing:}}
 {{=content}}
-
-{{if not editing:}}
+{{else:}}
+{{=represent_wiki(content)}}
 <p>{{=A('Edit', _class='btn', _href=URL('default', 'test', vars=dict(edit='true')))}}</p>
 {{pass}}
 

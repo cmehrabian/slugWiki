@@ -48,7 +48,12 @@ def test():
         # Processes the form.
         if form.process().accepted:
             # Writes the new content.
-            r.update_record(body=form.vars.body)
+            if r is None:
+                # First time: we need to insert it.
+                db.testpage.insert(id=1, body=form.vars.body)
+            else:
+                # We update it.
+                r.update_record(body=form.vars.body)
             # We redirect here, so we get this page with GET rather than POST,
             # and we go out of edit mode.
             redirect(URL('default', 'test'))
