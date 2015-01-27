@@ -27,8 +27,11 @@ def create_wiki_links(s):
     wikitext s with links to default/page/polar%20bear, so the name of the 
     page will be urlencoded and passed as argument 1."""
     def makelink(match):
+        # The tile is what the user puts in
         title = match.group(2).strip()
-        return '[[%s %s]]' % (title, URL('default', 'index', args=[title]))
+        # The page, instead, is a normalized lowercase version.
+        page = title.lower()
+        return '[[%s %s]]' % (title, URL('default', 'index', args=[page]))
     return re.sub(RE_LINKS, makelink, s)
 
 def represent_wiki(s):

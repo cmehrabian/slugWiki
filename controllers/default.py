@@ -15,10 +15,15 @@ def index():
     # You have to serve to the user the most recent revision of the 
     # page with title equal to title.
     
+    # Let's uppernice the title.  The last 'title()' below
+    # is actually a Python function, if you are wondering.
+    display_title = title.title()
+
+    
     # Here, I am faking it.  
     # Produce the content from real database data. 
     content = represent_wiki("I like <<Panda>>s")
-    return dict(title=title, content=content)
+    return dict(display_title=display_title, content=content)
 
 
 def test():
@@ -28,6 +33,11 @@ def test():
     title = "This is the wiki's test page"
     form = None
     content = None
+    
+    # Let's uppernice the title.  The last 'title()' below
+    # is actually a Python function, if you are wondering.
+    display_title = title.title()
+    
     # Gets the body s of the page.
     r = db.testpage(1)
     s = r.body if r is not None else ''
@@ -61,7 +71,7 @@ def test():
     else:
         # We are just displaying the page
         content = s
-    return dict(title=title, content=content, editing=editing)
+    return dict(display_title=display_title, content=content, editing=editing)
 
 
 def user():
