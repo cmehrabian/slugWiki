@@ -1,6 +1,13 @@
 {{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
 {{extend 'layout.html'}}
 
+{{block head}}
+<!-- This hides the "content" label of the form. -->
+<style>
+label#no_table_body__label { display: none; }
+</style>
+{{end}}
+
 <h1>{{=title}}</h1>
 
 {{=content}}
@@ -8,3 +15,4 @@
 {{if not editing:}}
 <p>{{=A('Edit', _class='btn', _href=URL('default', 'test', vars=dict(edit='true')))}}</p>
 {{pass}}
+
