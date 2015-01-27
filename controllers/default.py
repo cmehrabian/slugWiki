@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*-
 # this file is released under public domain and you can use without limitations
 
-#########################################################################
-## This is a sample controller
-## - index is the default action of any application
-## - user is required for authentication and authorization
-## - download is for downloading files uploaded in the db (does streaming)
-## - api is an example of Hypermedia API support and access control
-#########################################################################
+import logging
+
 
 def index():
     """
@@ -34,10 +29,13 @@ def test():
     form = None
     content = None
     # Gets the body s of the page.
-    r = db.testtable(1)
+    r = db.testpage(1)
     s = r.body if r is not None else ''
     # Are we editing?
     editing = request.vars.edit == 'true'
+    # This is how you can use logging, very useful.
+    logger.info("This is a request for page %r, with editing %r" %
+                 (title, editing))
     if editing:
         # We are editing.  Gets the body s of the page.
         # Creates a form to edit the content s, with s as default.
@@ -45,6 +43,7 @@ def test():
                                      label='Content',
                                      default=s
                                      ))
+        # You can easily add extra buttons to forms.
         form.add_button('Cancel', URL('default', 'test'))
         # Processes the form.
         if form.process().accepted:

@@ -85,3 +85,16 @@ use_janrain(auth, filename='private/janrain.key')
 
 ## after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)
+
+# Let's change the default log level.
+import logging
+# NOTE: this is NOT threadsafe, and it's a bad idea for a production site.
+# One should really use a logging configuration file. 
+# The only reason I am not doing that here is that I want this to be easily packaged
+# as an application, for teaching purposes.
+logger = logging.getLogger('slugwiki')
+logger.setLevel(logging.DEBUG)
+# Let's log the request.
+logger.info("%s %s %s" % (request.now, request.env.request_method, request.env.path_info))
+logger.info("  Args: %r" % request.args)
+logger.info("  Vars: %r" % request.vars)
