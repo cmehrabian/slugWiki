@@ -11,14 +11,19 @@
 
 def index():
     """
-    example action using the internationalization operator T and flash
-    rendered by views/default/index.html or views/generic.html
-
-    if you need a simple wiki simply replace the two lines below with:
-    return auth.wiki()
+    This is the main page of the wiki.  
+    You will find the title of the requested page in request.args(0).
+    If this is None, then just serve the latest revision of something titled "Main page" or something 
+    like that. 
     """
-    response.flash = T("Welcome to web2py!")
-    return dict(message=T('Hello World'))
+    title = request.args(0) or 'main page'
+    # You have to serve to the user the most recent revision of the 
+    # page with title equal to title.
+    
+    # Here, I am faking it.  
+    # Produce the content from real database data. 
+    content = represent_wiki("I like <<Panda>>s")
+    return dict(content=content)
 
 
 def user():
