@@ -16,6 +16,12 @@ db.define_table('revision',
     Field('body', 'text'), # This is the main content of a revision.
     )
 
+db.define_table('testpage',
+    # This table is used for testing only.  Don't use it in your code,
+    # but feel free to look at how I use it. 
+    Field('body', 'text'),
+    )
+
 def create_wiki_links(s):
     """This function replaces occurrences of '<<polar bear>>' in the 
     wikitext s with links to default/page/polar%20bear, so the name of the 
