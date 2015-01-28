@@ -35,11 +35,14 @@ def create_wiki_links(s):
     return re.sub(RE_LINKS, makelink, s)
 
 def represent_wiki(s):
-    """Representation function for wiki pages."""
+    """Representation function for wiki pages.  This takes a string s
+    containing markup language, and renders it in HTML, also transforming
+    the <<page>> links to links to /default/index/page"""
     return MARKMIN(create_wiki_links(s))
 
 def represent_content(v, r):
-    """In case you need it."""
+    """In case you need it: this is similar to represent_wiki, 
+    but can be used in db.table.field.represent = represent_content"""
     return represent_wiki(v, None)
 
 # We associate the wiki representation with the body of a revision.
