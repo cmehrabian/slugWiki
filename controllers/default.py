@@ -22,7 +22,8 @@ def index():
     
     # Here, I am faking it.  
     # Produce the content from real database data. 
-    content = represent_wiki("I like <<Panda>>s")
+    content = represent_wiki("I like <<Slugs>>s")
+    
     return dict(display_title=display_title, content=content)
 
 
