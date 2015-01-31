@@ -43,7 +43,7 @@ def represent_wiki(s):
 def represent_content(v, r):
     """In case you need it: this is similar to represent_wiki, 
     but can be used in db.table.field.represent = represent_content"""
-    return represent_wiki(v, None)
+    return represent_wiki(v)
 
 # We associate the wiki representation with the body of a revision.
 db.revision.body.represent = represent_content
