@@ -6,14 +6,18 @@ import unittest
 # Format for wiki links.
 RE_LINKS = re.compile('(<<)(.*?)(>>)')
 
-db.define_table('pagetable' # Name 'page' is reserved unfortunately.
+db.define_table('pagetable', # Name 'page' is reserved unfortunately.
     # Complete!
+    Field('title'),
     )
 
 
 db.define_table('revision',
     # Complete!
-    Field('body', 'text'), # This is the main content of a revision.
+    Field('body', 'text'),
+    Field('page_reference'), # This is the main content of a revision.
+    Field('author'),
+    Field('date_posted', 'datetime'),
     )
 
 db.define_table('testpage',
@@ -21,6 +25,8 @@ db.define_table('testpage',
     # but feel free to look at how I use it. 
     Field('body', 'text'),
     )
+
+db.revision.date_posted.default = datetime.utcnow()
 
 def create_wiki_links(s):
     """This function replaces occurrences of '<<polar bear>>' in the 
