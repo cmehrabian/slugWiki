@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # this file is released under public domain and you can use without limitations
 
+#Non Trivial - dicide for yourself what you do with the forms
+
 import logging
 
 
@@ -11,6 +13,8 @@ def index():
     If this is None, then just serve the latest revision of something titled "Main page" or something 
     like that. 
     """
+    # p = db().select(db.pagetable.ALL)
+
     title = request.args(0) or 'main page'
     # You have to serve to the user the most recent revision of the 
     # page with title equal to title.
@@ -25,6 +29,70 @@ def index():
     content = represent_wiki("I like <<Slugs>>s")
     
     return dict(display_title=display_title, content=content)
+
+@auth.requires_login()
+def add():
+    #get first
+    p = db.revision(1)
+    #find most recent revision and set it previous_text
+    #previous_text = p.body
+
+    form = SQLFORM.factory(
+        Field('title'),
+        Field('body', 'text'), #default=previous_text),
+        Field('page_reference'), #'integer', requires=IS_INT_IN_RANGE(0, 1000), default=831),
+        Field('author'), #use author login
+        Field('date_posted', 'datetime')
+        )
+    if form.process().accepted:
+        #insert into table
+        #where did it go? forms.vars.id
+        id = db.revision.insert(title = form.vars.title,
+                                body = form.vars.body,
+                                #page_reference = previous_text,
+                                author = form.vars.author,
+                                date_posted = form.vars.date_posted,
+                                )
+        #write to any table
+        # db.pagetable.insert(item_id = id,
+        #                     title = "this is a log",
+        #                     special = "no"
+        #                     )
+        session.flash = T("inserted")
+        redirect(URL('default', 'index'))
+    return dict(form=form)
+
+@auth.requires_login()
+def edit():
+
+    def validate_edit_form(form):
+        if form.vars.body != '':
+            form.errors.body = T('Insert something more')
+        elif form.vars.body != '1':
+            form.errors.body = T('Insert some letters')
+
+    p = db.revision(request.args(0)) or redirect(URL('default', 'index'))
+    if p.user_id != auth.user_id:
+        session.flash = T('Not authorized')
+        redirect(URL('default', 'index'))
+    form = SQLFORM(db.revision, record=p)
+    if form.process(onvalidate=validate_edit_form).accepted: #edit_plus_validation(p)
+        session.flash = T('Updated')
+        redirect(URL('default', 'index', args=[p.id]))
+    return dict(form=form)
+
+#alternative
+
+# def edit_plus_validation(previous_rec):
+#     def validate_edit_form(form):
+#         if form.vars.body != '':
+#             form.errors.body = T('Insert something more')
+#         elif form.vars.body != '1':
+#             form.errors.body = T('Insert some letters')
+#         if previous_rec.area_code is not None form.vars.body ! = p.body:
+#             form.errors.body = T('Insert something more')
+#     return validate_edit_form
+
 
 
 def test():

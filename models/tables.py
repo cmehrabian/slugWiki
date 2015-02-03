@@ -11,11 +11,14 @@ db.define_table('pagetable', # Name 'page' is reserved unfortunately.
     Field('title'),
     )
 
+#need to cross these tables revision of title
 
 db.define_table('revision',
     # Complete!
+    Field('title'),
     Field('body', 'text'),
     Field('page_reference'), # This is the main content of a revision.
+    Field('user_id', db.auth_user), #use this instead of author?
     Field('author'),
     Field('date_posted', 'datetime'),
     )
