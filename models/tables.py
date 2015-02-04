@@ -3,6 +3,7 @@ from datetime import datetime
 import re
 import unittest
 
+
 # Format for wiki links.
 RE_LINKS = re.compile('(<<)(.*?)(>>)')
 
@@ -16,7 +17,7 @@ db.define_table('revision',
    # Field('title', db.pagetable), #reference
     Field('pagetable_id', db.pagetable),
     #Field('page_reference', 'reference db.pagetable'),
-    Field('body', 'text'),
+    Field('body', 'text', default="content"),
      # This is the main content of a revision.
     #Field('user_id', db.auth_user), #use this instead of author?
     Field('author', db.auth_user),
@@ -31,7 +32,8 @@ db.define_table('testpage',
 
 #db.revision.date_posted.default = datetime.utcnow()
 #db.revision.name.default = get_first_name()
-db.revision.body.default = "Content"
+# db.revision.body.default = "Content"
+
 db.revision.body.represent = IS_NOT_EMPTY()
 #db.revision.body.represent = represent_content
 # db.pagetable.title.requires = IS_NOT_IN_DB(db, 'pagetable.title')

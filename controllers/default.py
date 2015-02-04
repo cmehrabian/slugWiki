@@ -11,15 +11,21 @@ def index():
     # title = title.lower()
     # #sets title to var display_title
     # title_name = title.title()
+    # def GetData(form):
+    #    return form.vars.pagetable()
 
 
 
     pajes = db().select(db.pagetable.ALL)
-    form = SQLFORM.factory(Field('title'))
+    #form = SQLFORM.factory(Field('title'))
     form = SQLFORM(db.pagetable)
     if form.process().accepted:
+        record = form.vars.title
         session.flash = T('Page added')
-        #redirect(URL('default', 'index2', args=[title]))
+        if db(db.pagetable.title == record).select().first() is None:
+            redirect(URL('default', 'index2', args=[record],vars=dict(edit='true')))
+        else:
+            redirect(URL('default', 'index2', args=[record]))
         # title = request.args(0)
         # title_name = title.title()
         #if db(db.pagetable.title == title).select().first() is None:
@@ -56,7 +62,7 @@ def index2():
     editing = request.vars.edit == 'y'
 
     if editing:
-        form = SQLFORM.factory(Field('body', 'text', label='Content', default=s))
+        form = SQLFORM.factory(Field('body', 'text', label='Content'))
         form.add_button('Cancel', URL('default', 'index', args=[all]))
 
         if form.process().accepted:
