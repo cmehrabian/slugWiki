@@ -8,19 +8,19 @@ RE_LINKS = re.compile('(<<)(.*?)(>>)')
 
 db.define_table('pagetable', # Name 'page' is reserved unfortunately.
     # Complete!
-    Field('title'),
+    Field('title')
     )
-
 #need to cross these tables revision of title
-
 db.define_table('revision',
     # Complete!
-    Field('title'),
+   # Field('title', db.pagetable), #reference
+    Field('pagetable_id', db.pagetable),
+    #Field('page_reference', 'reference db.pagetable'),
     Field('body', 'text'),
-    Field('page_reference'), # This is the main content of a revision.
-    Field('user_id', db.auth_user), #use this instead of author?
-    Field('author'),
-    Field('date_posted', 'datetime'),
+     # This is the main content of a revision.
+    #Field('user_id', db.auth_user), #use this instead of author?
+    Field('author', db.auth_user),
+    Field('date_created', 'datetime', default=request.now),
     )
 
 db.define_table('testpage',
@@ -29,7 +29,12 @@ db.define_table('testpage',
     Field('body', 'text'),
     )
 
-db.revision.date_posted.default = datetime.utcnow()
+#db.revision.date_posted.default = datetime.utcnow()
+#db.revision.name.default = get_first_name()
+db.revision.body.default = "Content"
+db.revision.body.represent = IS_NOT_EMPTY()
+#db.revision.body.represent = represent_content
+# db.pagetable.title.requires = IS_NOT_IN_DB(db, 'pagetable.title')
 
 def create_wiki_links(s):
     """This function replaces occurrences of '<<polar bear>>' in the 
@@ -55,4 +60,3 @@ def represent_content(v, r):
     return represent_wiki(v)
 
 # We associate the wiki representation with the body of a revision.
-db.revision.body.represent = represent_content

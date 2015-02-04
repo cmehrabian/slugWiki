@@ -1,14 +1,20 @@
 {{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
 {{extend 'layout.html'}}
 
-<h1>{{=display_title}}</h1>
 
-{{=content}}
+<!-- This hides the "content" label of the form. -->
+<style>
+label#no_table_body__label { display: none; }
+</style>
+{{=form}}
+
+<ul>
+{{for p in pajes:}}
+<li>
+({{=A(p.title, _href=URL('default', 'index2', args=[p.title]))}})
+</li>
+{{pass}}
+</ul>
 
 <p>
-{{=A ('Add a post', _class='btn', _href=URL('default', 'add'))}}
 </p>
-
-
-<!-- You need to put here buttons to see the revision history (to implement later),
-and to edit (to implement now). -->
