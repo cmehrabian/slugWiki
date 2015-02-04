@@ -21,10 +21,12 @@ def index():
     form = SQLFORM(db.pagetable)
     if form.process().accepted:
         record = form.vars.title
-        session.flash = T('Page added')
+        
         if db(db.pagetable.title == record).select().first() is None:
+            session.flash = T('Page added')
             redirect(URL('default', 'index2', args=[record],vars=dict(edit='true')))
         else:
+            session.flash = T('Page found')
             redirect(URL('default', 'index2', args=[record]))
         # title = request.args(0)
         # title_name = title.title()

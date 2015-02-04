@@ -10,11 +10,6 @@ label#no_table_body__label { display: none; }
 
 <h1>{{=title_name}}</h1>
 
-	<div align="right">
-	    {{if not editing:}}
-	    {{=button}}
-	    {{pass}}
-	</div>
 
 {{if editing:}}
 {{=content}}
@@ -23,6 +18,12 @@ label#no_table_body__label { display: none; }
 {{pass}}
 <p>
 {{=A('Return to Main', _class='btn', _href=URL('default', 'index'))}}
+
+
+{{if not editing:}}
+{{=button}}
+{{pass}}
+
 </p>
 
 
