@@ -15,35 +15,45 @@ def index():
     #    return form.vars.pagetable()
 
 
-
+    #set all titles and set it var pajes
     pajes = db().select(db.pagetable.ALL)
-    #form = SQLFORM.factory(Field('title'))
+    #instantiate form
     form = SQLFORM(db.pagetable)
+    #if the form is submitted
     if form.process().accepted:
-        record = form.vars.title
-        
+        #set the title to var
+        record = form.vars.title  
+        # if the first selection of the query doesn't -> lets add it      
         if db(db.pagetable.title == record).select().first() is None:
+            #flash them an add notice
             session.flash = T('Page added')
-            redirect(URL('default', 'index2', args=[record],vars=dict(edit='true')))
+            #redirct them to an add page
+            redirect(URL('default', 'home', args=[record],vars=dict(edit='true')))
         else:
+            #otherwise flash them an not found, and send to make it
             session.flash = T('Page found')
-            redirect(URL('default', 'index2', args=[record]))
+            redirect(URL('default', 'home', args=[record]))
+
+
+
+
+
         # title = request.args(0)
         # title_name = title.title()
         #if db(db.pagetable.title == title).select().first() is None:
         #send you to default/new/{{title}} to add it
             #redirect(URL('default', 'new', args=[title]))
         #else:
-            #redirect(URL('default', 'index2', args=[title]))
+            #redirect(URL('default', 'home', args=[title]))
             # rev.update_record(body=form.vars.body)
-            # redirect(URL('default', 'index2', args=[title]))
+            # redirect(URL('default', 'home', args=[title]))
     # title = request.args(0)
     #title = title.lower()
     # display = title.title()
 
     return dict(pajes=pajes, form=form)
 
-def index2():
+def home():
 
     #sets the first page topic
     title = request.args(0) or 'SlugWiki'
@@ -57,26 +67,32 @@ def index2():
         redirect(URL('default', 'new', args=[title]))
     #lets set page_id as the id of that first selection
     page_id = db(db.pagetable.title == title).select().first().id
-
+    #old revision is set to var rev which selects first item of the list reversed order of time created
     rev = db(db.revision.pagetable_id == page_id).select(orderby=~db.revision.date_created).first()
-    s = rev.body
-
+    # s is set to the body of that revision
+    s = rev.body#if rev is not None else ''
+    #if user wants to edit ?edit=y will attach to URL
     editing = request.vars.edit == 'y'
-
+    #if we are editing
     if editing:
-        form = SQLFORM.factory(Field('body', 'text', label='Content'))
+        #lets create a form with custom paras body, type text, labeled and set to previous rev
+        form = SQLFORM.factory(Field('body', 'text', label='Content', default=s))
+        #create a cancel button that directs us back to index
         form.add_button('Cancel', URL('default', 'index', args=[all]))
-
+        #if form is accepted
         if form.process().accepted:
+            #update revision with new body
             rev.update_record(body=form.vars.body)
-            redirect(URL('default', 'index2', args=[title]))
-
+            #direct them back to 
+            redirect(URL('default', 'home', args=[title]))
+        #set content to the form we declared
         content = form
     else:
+        #otherwise set the content to the previous body
         content = s
-
-    button = A('edit', _class='btn', _href=URL('default', 'index2', args=[title], vars=dict(edit='y')))
-
+    #create button edit that directs us to home/{{title}}
+    button = A('edit', _class='btn', _href=URL('default', 'home', args=[title], vars=dict(edit='y')))
+    #return the dictionary
     return dict(title_name=title_name,
                 button = button,
                 content = content,
@@ -102,12 +118,7 @@ def index2():
 
     #lecture notes to quickly JOT
 
-# def confirm():
-#     form = FORM.confirm('yes')
-#     title = request.args(0)
-#     if form.accepted:
-#         db.pagetable.insert(title=title)
-#         redirect(URL(''))
+
 
 def new():
     #set var title to the last thing in the URL

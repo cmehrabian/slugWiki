@@ -9,7 +9,7 @@ RE_LINKS = re.compile('(<<)(.*?)(>>)')
 
 db.define_table('pagetable', # Name 'page' is reserved unfortunately.
     # Complete!
-    Field('title')
+    Field('title', label="Search")
     )
 #need to cross these tables revision of title
 db.define_table('revision',
@@ -17,7 +17,7 @@ db.define_table('revision',
    # Field('title', db.pagetable), #reference
     Field('pagetable_id', db.pagetable),
     #Field('page_reference', 'reference db.pagetable'),
-    Field('body', 'text', default="content"),
+    Field('body', 'text'),
      # This is the main content of a revision.
     #Field('user_id', db.auth_user), #use this instead of author?
     Field('author', db.auth_user),

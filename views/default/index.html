@@ -11,7 +11,7 @@ label#no_table_body__label { display: none; }
 <ul>
 {{for p in pajes:}}
 <li>
-({{=A(p.title, _href=URL('default', 'index2', args=[p.title]))}})
+({{=A(p.title, _href=URL('default', 'home', args=[p.title]))}})
 </li>
 {{pass}}
 </ul>
