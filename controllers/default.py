@@ -70,7 +70,8 @@ def home():
     #old revision is set to var rev which selects first item of the list reversed order of time created
     rev = db(db.revision.pagetable_id == page_id).select(orderby=~db.revision.date_created).first()
     # s is set to the body of that revision
-    s = rev.body#if rev is not None else ''
+    # rev.body = "default"
+    s = rev.body
     #if user wants to edit ?edit=y will attach to URL
     editing = request.vars.edit == 'y'
     #if we are editing
@@ -79,8 +80,11 @@ def home():
         form = SQLFORM.factory(Field('body', 'text', label='Content', default=s))
         #create a cancel button that directs us back to index
         form.add_button('Cancel', URL('default', 'index', args=[all]))
+        #hist button
+        form.add_button('History', URL('default', 'history', args=[title]))
         #if form is accepted
         if form.process().accepted:
+            db.revision.insert(author = auth.user_id, body=form.vars.body, pagetable_id = page_id)
             #update revision with new body
             rev.update_record(body=form.vars.body)
             #direct them back to 
@@ -156,6 +160,19 @@ def create():
         redirect(URL('default', 'index', args=[title]))
     #return a dictionary or form and title
     return dict(form = form, title = title)
+
+def history():
+    #title set to last > URL
+    title = request.args(0)
+    page_id = db(db.pagetable.title == title).select().first().id
+    rev = db(db.revision.pagetable_id == page_id).select(orderby=~db.revision.date_created)
+    revising = request.vars.rev == 'y'
+    if revising:
+        rev_id = request.args(1)
+        rev = db(db.revision.id == rev_id).select().first()
+        db.revision.insert(author = auth.user_id, body=rev.body, pagetable_id = page_id)
+        redirect(URL('default', 'home', args=[title]))
+    return dict(title =title, rev=rev)
 
 
 # @auth.requires_login()

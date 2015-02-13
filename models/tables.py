@@ -2,6 +2,10 @@
 from datetime import datetime
 import re
 import unittest
+from gluon import *
+
+def ip():
+    return current.request.client
 
 
 # Format for wiki links.
@@ -18,8 +22,10 @@ db.define_table('revision',
     Field('pagetable_id', db.pagetable),
     #Field('page_reference', 'reference db.pagetable'),
     Field('body', 'text'),
+    Field('author_ip', default = ip()),
      # This is the main content of a revision.
     #Field('user_id', db.auth_user), #use this instead of author?
+    Field('edit_comment'),
     Field('author', db.auth_user),
     Field('date_created', 'datetime', default=request.now),
     )
